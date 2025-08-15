@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📄 Invoice Platform
 
-## Getting Started
+> ⚠️ **Status:** _Work In Progress_ — This project is actively being developed. Expect frequent updates, changes, and new features.
 
-First, run the development server:
+A modern and intuitive platform for managing, creating, and sending invoices — designed for speed, reliability, and ease of use.  
+Built with cutting-edge web technologies and a clean, minimal UI for a delightful user experience.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend:** [Next.js 15](https://nextjs.org/) with [shadcn/ui](https://ui.shadcn.com/) for UI components.
+- **Backend:** [Drizzle ORM](https://orm.drizzle.team/) + [PostgreSQL](https://www.postgresql.org/) for database management.
+- **Email Service:** [Nodemailer](https://nodemailer.com/) integrated with [Mailtrap](https://mailtrap.io/) for safe email testing.
+- **Styling:** Tailwind CSS with shadcn component library.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ✨ Features (Planned & In Progress)
 
-To learn more about Next.js, take a look at the following resources:
+- ✅ User authentication & account management
+- ✅ Invoice creation with dynamic fields
+- ✅ Email invoice delivery via Nodemailer + Mailtrap
+- ⏳ Invoice status tracking (Pending, Sent, Paid)
+- ⏳ Dashboard with statistics & charts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
