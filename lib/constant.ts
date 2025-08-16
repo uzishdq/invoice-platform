@@ -6,6 +6,7 @@ export const ROUTES = {
   },
   AUTH: {
     DASHBOARD: "/dashboard",
+    ONBOARDING: "/dashboard/onboarding",
   },
 };
 

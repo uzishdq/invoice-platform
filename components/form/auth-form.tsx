@@ -21,6 +21,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import { ROUTES } from "@/lib/constant";
+import { Loader2 } from "lucide-react";
 
 function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -54,14 +55,7 @@ function LoginForm() {
             <span className="sr-only">Invoice Platfrom.</span>
           </a>
           <h1 className="text-xl font-bold">Welcome to Invoice Platfrom.</h1>
-          <div className="text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="#" className="underline underline-offset-4">
-              Register{" "}
-            </Link>
-          </div>
         </div>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
@@ -78,11 +72,18 @@ function LoginForm() {
               )}
             />
             <Button
-              className="w-full"
+              className="w-full flex items-center justify-center gap-2"
               type="submit"
               disabled={form.formState.isSubmitting}
             >
-              {!form.formState.isSubmitting ? "Login" : "Logging in..."}
+              {form.formState.isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                "Login"
+              )}
             </Button>
           </form>
         </Form>

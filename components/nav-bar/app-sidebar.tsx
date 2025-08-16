@@ -22,43 +22,48 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/lib/constant";
+import { Session } from "next-auth";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: ROUTES.AUTH.DASHBOARD,
-      icon: IconDashboard,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-};
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  session: Session | null;
+}
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ session, ...props }: AppSidebarProps) {
+  const data = {
+    user: {
+      name: session?.user?.name || "John Doe",
+      email: session?.user?.email || "",
+      avatar: session?.user?.image || "",
+    },
+    navMain: [
+      {
+        title: "Dashboard",
+        url: ROUTES.AUTH.DASHBOARD,
+        icon: IconDashboard,
+      },
+      {
+        title: "Lifecycle",
+        url: "#",
+        icon: IconListDetails,
+      },
+      {
+        title: "Analytics",
+        url: "#",
+        icon: IconChartBar,
+      },
+      {
+        title: "Projects",
+        url: "#",
+        icon: IconFolder,
+      },
+      {
+        title: "Team",
+        url: "#",
+        icon: IconUsers,
+      },
+    ],
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>

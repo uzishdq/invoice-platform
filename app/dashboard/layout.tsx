@@ -1,12 +1,14 @@
 import { AppSidebar } from "@/components/nav-bar/app-sidebar";
 import { SiteHeader } from "@/components/nav-bar/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { auth } from "@/lib/auth";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <SidebarProvider
       style={
@@ -16,7 +18,7 @@ export default function RootLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" />
+      <AppSidebar variant="inset" session={session} />
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">

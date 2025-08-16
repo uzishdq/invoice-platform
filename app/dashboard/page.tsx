@@ -3,8 +3,17 @@ import { DataTable } from "@/components/data-table";
 import { SectionCards } from "@/components/section-cards";
 
 import data from "./data.json";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { ROUTES } from "@/lib/constant";
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
+
+  if (!session || !session.user?.name) {
+    redirect(ROUTES.AUTH.ONBOARDING);
+  }
+
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
       <SectionCards />

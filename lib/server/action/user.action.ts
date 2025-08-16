@@ -11,7 +11,7 @@ export async function onboardUser(values: z.infer<typeof onboardSchema>) {
   try {
     const session = await auth();
 
-    if (!session?.user || !session.user.id) {
+    if (!session?.user || !session.user.email) {
       return {
         ok: false,
         message: "You must be logged in to complete the onboarding.",
@@ -33,7 +33,7 @@ export async function onboardUser(values: z.infer<typeof onboardSchema>) {
         name: parsed.data.name,
         address: parsed.data.address,
       })
-      .where(eq(users.id, session.user.id))
+      .where(eq(users.email, session.user.email))
       .returning();
 
     if (result.length === 0) {
