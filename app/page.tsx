@@ -8,16 +8,16 @@ import {
   ArrowRight,
   CheckCircle,
   DollarSign,
+  FileStack,
   FileText,
   Globe,
   Lock,
-  Menu,
-  Sparkles,
   Users,
   Zap,
 } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+import { ROUTES } from "@/lib/constant";
 
 const TypewriterText = ({ text }: { text: string }) => {
   const [displayText, setDisplayText] = useState("");
@@ -125,12 +125,14 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="text-2xl font-bold flex items-center"
           >
-            <Sparkles className="mr-2 text-gray-300" />
-            InvoicePro
+            <FileStack className="mr-2 text-gray-300" />
+            Invoice Platform
           </motion.div>
-          <Button className="hidden md:inline-block bg-white text-black hover:bg-gray-200">
-            Get Started
-          </Button>
+          <Link href={ROUTES.PUBLIC.LOGIN}>
+            <Button className="hidden md:inline-block bg-white text-black hover:bg-gray-200">
+              Get Started
+            </Button>
+          </Link>
         </div>
       </nav>
 
@@ -165,9 +167,12 @@ export default function Home() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <Button className="bg-white text-black hover:bg-gray-200 text-lg px-8 py-6 flex items-center">
-            Get Started Free <ArrowRight className="ml-2" />
-          </Button>
+          <Link href={ROUTES.PUBLIC.LOGIN}>
+            <Button className="bg-white text-black hover:bg-gray-200 text-lg px-8 py-6 flex items-center">
+              Get Started Free
+              <ArrowRight className="ml-2" />
+            </Button>
+          </Link>
         </motion.div>
       </section>
 
@@ -318,77 +323,6 @@ export default function Home() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 md:px-8">
-        <motion.h2
-          className="text-4xl font-bold text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          Simple Pricing
-        </motion.h2>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              plan: "Starter",
-              price: "$9/mo",
-              features: [
-                "Unlimited Invoices",
-                "Basic Templates",
-                "Email Support",
-              ],
-            },
-            {
-              plan: "Pro",
-              price: "$29/mo",
-              features: [
-                "All Starter Features",
-                "Advanced Analytics",
-                "Team Collaboration",
-                "Priority Support",
-              ],
-            },
-            {
-              plan: "Enterprise",
-              price: "Custom",
-              features: [
-                "All Pro Features",
-                "Custom Integrations",
-                "Dedicated Account Manager",
-                "SLA Guarantee",
-              ],
-            },
-          ].map((tier, index) => (
-            <motion.div
-              key={index}
-              className={`border border-gray-700 rounded-lg p-8 ${
-                index === 1 ? "bg-gray-900/80 scale-105" : "bg-gray-900/50"
-              }`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-2xl font-bold mb-4">{tier.plan}</h3>
-              <p className="text-4xl font-bold mb-6">{tier.price}</p>
-              <ul className="space-y-3 mb-8">
-                {tier.features.map((feature, fIndex) => (
-                  <li key={fIndex} className="flex items-center text-gray-300">
-                    <CheckCircle className="w-5 h-5 mr-2 text-green-400" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <Button className="w-full bg-white text-black hover:bg-gray-200">
-                Choose Plan
-              </Button>
             </motion.div>
           ))}
         </div>

@@ -33,6 +33,7 @@ export default function OnBoarding() {
       name: "",
       address: "",
     },
+    mode: "onChange",
   });
 
   async function onSubmit(values: z.infer<typeof onboardSchema>) {

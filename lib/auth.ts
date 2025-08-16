@@ -27,6 +27,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  callbacks: {
+    jwt: async ({ token, user, session }) => {
+      if (user) {
+        token.sub = user.id;
+        token.name = user.name;
+        token.email = user.email;
+      }
+
+      if (session?.user?.name) {
+        token.name = session.user.name;
+      }
+
+      return token;
+    },
+    session: async ({ session, token }) => {
+      session.user.id = typeof token.id === "string" ? token.id : "";
+      session.user.name = token.name;
+      session.user.email = typeof token.email === "string" ? token.email : "";
+      return session;
+    },
   },
 });

@@ -2,12 +2,9 @@
 
 import * as React from "react";
 import {
-  IconChartBar,
   IconDashboard,
   IconFileDollar,
-  IconFolder,
-  IconListDetails,
-  IconUsers,
+  IconFileInvoice,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-bar/nav-main";
@@ -42,24 +39,9 @@ export function AppSidebar({ session, ...props }: AppSidebarProps) {
         icon: IconDashboard,
       },
       {
-        title: "Lifecycle",
-        url: "#",
-        icon: IconListDetails,
-      },
-      {
-        title: "Analytics",
-        url: "#",
-        icon: IconChartBar,
-      },
-      {
-        title: "Projects",
-        url: "#",
-        icon: IconFolder,
-      },
-      {
-        title: "Team",
-        url: "#",
-        icon: IconUsers,
+        title: "Invoices",
+        url: ROUTES.AUTH.INVOICES,
+        icon: IconFileInvoice,
       },
     ],
   };

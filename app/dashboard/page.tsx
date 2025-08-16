@@ -4,13 +4,21 @@ import { SectionCards } from "@/components/section-cards";
 
 import data from "./data.json";
 import { auth } from "@/lib/auth";
+import { CustomAlert } from "@/components/form/alert-form";
+import { isOnboard } from "@/lib/server/data/user.data";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constant";
 
 export default async function Page() {
   const session = await auth();
 
-  if (!session || !session.user?.name) {
+  if (!session?.user?.email) {
+    return <CustomAlert variant="destructive" description="Please Login" />;
+  }
+
+  const user = await isOnboard(session.user.email);
+
+  if (!user) {
     redirect(ROUTES.AUTH.ONBOARDING);
   }
 

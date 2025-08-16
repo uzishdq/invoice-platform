@@ -17,7 +17,6 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import Link from "next/link";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import { ROUTES } from "@/lib/constant";
@@ -29,6 +28,7 @@ function LoginForm() {
     defaultValues: {
       email: "",
     },
+    mode: "onChange",
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {

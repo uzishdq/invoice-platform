@@ -7,29 +7,44 @@ import {
   ROUTES,
 } from "./lib/constant";
 
-export function middleware(request: NextRequest) {
-  const sessionToken = request.cookies.get("authjs.session-token")?.value;
+import { getToken } from "next-auth/jwt";
+
+export async function middleware(request: NextRequest) {
   const { nextUrl } = request;
+
+  // Ambil token sesi
+  const sessionToken = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET,
+  });
 
   const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname);
   const isApiAuth = nextUrl.pathname.startsWith(DEFAULT_AUTH);
   const isApiRoute = nextUrl.pathname.startsWith(DEFAULT_API_URL);
+  const isDashboard = nextUrl.pathname === ROUTES.AUTH.DASHBOARD;
 
-  if (isPublicRoute) {
-    if (sessionToken) {
-      return NextResponse.redirect(new URL(ROUTES.AUTH.DASHBOARD, request.url));
-    }
+  if (isPublicRoute && sessionToken) {
+    return NextResponse.redirect(new URL(ROUTES.AUTH.DASHBOARD, request.url));
+  }
+
+  if (isPublicRoute && !sessionToken) {
     return NextResponse.next();
   }
 
   if (isApiAuth) {
     return NextResponse.next();
-  } else if (!sessionToken && isApiRoute) {
-    return NextResponse.redirect(new URL(ROUTES.AUTH.DASHBOARD, nextUrl));
+  }
+
+  if (isApiRoute && !sessionToken) {
+    return NextResponse.redirect(new URL(ROUTES.PUBLIC.LOGIN, request.url));
   }
 
   if (!sessionToken) {
-    return NextResponse.redirect(new URL(ROUTES.PUBLIC.LOGIN, nextUrl));
+    return NextResponse.redirect(new URL(ROUTES.PUBLIC.LOGIN, request.url));
+  }
+
+  if (isDashboard && !sessionToken) {
+    return NextResponse.redirect(new URL(ROUTES.PUBLIC.LOGIN, request.url));
   }
 
   return NextResponse.next();
