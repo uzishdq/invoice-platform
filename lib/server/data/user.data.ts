@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 export const isOnboard = async (email: string | null | undefined) => {
   try {
     if (!email) {
-      return false;
+      return { ok: false, status: false };
     }
 
     const [result] = await db
@@ -16,13 +16,17 @@ export const isOnboard = async (email: string | null | undefined) => {
       .where(eq(users.email, email))
       .limit(1);
 
-    if (!result.name || !result.address) {
-      return false;
+    if (!result) {
+      return { ok: false, status: false };
     }
 
-    return true;
+    if (!result.name || !result.address) {
+      return { ok: true, status: false };
+    }
+
+    return { ok: true, status: true };
   } catch (error) {
     console.error("Error fetching user by email:", error);
-    return false;
+    return { ok: false, status: false };
   }
 };

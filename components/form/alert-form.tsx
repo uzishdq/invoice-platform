@@ -38,10 +38,12 @@ export function CustomAlert({
   const Icon = icon || defaultIcons[variant] || PopcornIcon;
 
   return (
-    <Alert className={cn(alertVariants[variant], className)} {...props}>
-      <Icon className="h-4 w-4" />
-      {title && <AlertTitle>{title}</AlertTitle>}
-      {description && <AlertDescription>{description}</AlertDescription>}
-    </Alert>
+    <div className="flex flex-col items-center justify-center h-full px-4">
+      <Alert className={cn(alertVariants[variant], className)} {...props}>
+        <Icon className="h-4 w-4" />
+        {title && <AlertTitle>{title}</AlertTitle>}
+        {description && <AlertDescription>{description}</AlertDescription>}
+      </Alert>
+    </div>
   );
 }

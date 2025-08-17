@@ -15,7 +15,11 @@ export default async function OnboardingPage() {
 
   const user = await isOnboard(session.user.email);
 
-  if (user) {
+  if (!user.ok) {
+    return <CustomAlert variant="destructive" description="Please Login" />;
+  }
+
+  if (user.status) {
     redirect(ROUTES.AUTH.DASHBOARD);
   }
 

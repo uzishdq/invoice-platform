@@ -23,6 +23,12 @@ export async function middleware(request: NextRequest) {
   const isApiRoute = nextUrl.pathname.startsWith(DEFAULT_API_URL);
   const isDashboard = nextUrl.pathname === ROUTES.AUTH.DASHBOARD;
 
+  console.log(sessionToken?.exp);
+
+  if (sessionToken?.exp && Date.now() >= sessionToken.exp * 1000) {
+    return NextResponse.redirect(new URL(ROUTES.PUBLIC.LOGIN, request.url));
+  }
+
   if (isPublicRoute && sessionToken) {
     return NextResponse.redirect(new URL(ROUTES.AUTH.DASHBOARD, request.url));
   }
