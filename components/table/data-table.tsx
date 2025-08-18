@@ -38,11 +38,20 @@ import {
 } from "@/components/ui/select";
 import { Label } from "../ui/label";
 import {
+  IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
+  IconLayoutColumns,
+  IconPlus,
 } from "@tabler/icons-react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -91,17 +100,17 @@ export function DataTable<TData, TValue>({
   return (
     <Card className="w-full">
       <CardHeader>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          {/* Bagian kiri: Title + Description */}
-          <div>
-            <CardTitle className="text-2xl">Data Sample</CardTitle>
-            <CardDescription>
-              Daftar data produk beserta status dan detailnya.
-            </CardDescription>
-          </div>
+        <CardTitle className="text-2xl">Data Sample</CardTitle>
+        <CardDescription>
+          Daftar data produk beserta status dan detailnya.
+        </CardDescription>
+      </CardHeader>
 
-          {/* Bagian kanan: Search & Filter */}
-          <div className="flex items-center gap-2">
+      <CardContent>
+        {/* Search & button */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-5">
+          {/* Search and Filter Section */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto">
             {searchBy && (
               <Input
                 placeholder={`Search By ${labelSearch}`}
@@ -111,7 +120,7 @@ export function DataTable<TData, TValue>({
                 onChange={(e) =>
                   table.getColumn(searchBy)?.setFilterValue(e.target.value)
                 }
-                className="max-w-sm"
+                className="w-full sm:max-w-xs"
               />
             )}
             {filterBy && filterOptions.length > 0 && (
@@ -121,7 +130,7 @@ export function DataTable<TData, TValue>({
                   setFilterValue(val === "all" ? "" : val)
                 }
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder={`Filter ${filterBy}`} />
                 </SelectTrigger>
                 <SelectContent>
@@ -135,31 +144,69 @@ export function DataTable<TData, TValue>({
               </Select>
             )}
           </div>
-        </div>
-      </CardHeader>
 
-      <CardContent>
+          {/* Action Buttons Section */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full sm:w-auto"
+                >
+                  <IconLayoutColumns className="mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Customize Columns</span>
+                  <span className="sm:hidden">Columns</span>
+                  <IconChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-full sm:w-56">
+                {table
+                  .getAllColumns()
+                  .filter(
+                    (column) =>
+                      typeof column.accessorFn !== "undefined" &&
+                      column.getCanHide()
+                  )
+                  .map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
+              <IconPlus className="mr-2 h-4 w-4" />
+              Create Invoice
+            </Button>
+          </div>
+        </div>
+
+        {/* Table */}
         <div className="rounded-md border">
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-muted sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="cursor-pointer select-none"
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {{
-                        asc: " 🔼",
-                        desc: " 🔽",
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </TableHead>
-                  ))}
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} colSpan={header.colSpan}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
               ))}
             </TableHeader>

@@ -3,15 +3,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +15,6 @@ import {
   IconDotsVertical,
   IconLoader,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
 import { Button as DrawerButton } from "@/components/ui/button";
 import {
   Drawer,
@@ -112,73 +102,20 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "target",
-    header: () => <div className="text-right">Target</div>,
-    cell: ({ row }) => (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
-            success: "Done",
-            error: "Error",
-          });
-        }}
-      >
-        <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-          Target
-        </Label>
-        <Input
-          className="hover:bg-input/30 focus-visible:bg-background h-8 w-16 border-transparent bg-transparent text-right shadow-none"
-          defaultValue={row.original.target}
-          id={`${row.original.id}-target`}
-        />
-      </form>
-    ),
+    header: "Target",
+    cell: ({ row }) => <div className="capitalize">{row.original.target}</div>,
   },
   {
     accessorKey: "limit",
-    header: () => <div className="text-right">Limit</div>,
-    cell: ({ row }) => (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
-            success: "Done",
-            error: "Error",
-          });
-        }}
-      >
-        <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-          Limit
-        </Label>
-        <Input
-          className="hover:bg-input/30 focus-visible:bg-background h-8 w-16 border-transparent bg-transparent text-right shadow-none"
-          defaultValue={row.original.limit}
-          id={`${row.original.id}-limit`}
-        />
-      </form>
-    ),
+    header: "Limit",
+    cell: ({ row }) => <div className="capitalize">{row.original.limit}</div>,
   },
   {
     accessorKey: "reviewer",
     header: "Reviewer",
-    cell: ({ row }) => {
-      const isAssigned = row.original.reviewer !== "Assign reviewer";
-      return isAssigned ? (
-        row.original.reviewer
-      ) : (
-        <Select>
-          <SelectTrigger className="w-38">
-            <SelectValue placeholder="Assign reviewer" />
-          </SelectTrigger>
-          <SelectContent align="end">
-            <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-            <SelectItem value="Jamik Tashpulatov">Jamik Tashpulatov</SelectItem>
-          </SelectContent>
-        </Select>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.reviewer}</div>
+    ),
   },
   {
     id: "actions",
