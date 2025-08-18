@@ -9,7 +9,7 @@ import { isOnboard } from "@/lib/server/data/user.data";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constant";
 
-export default async function Page() {
+export default async function DashboardPage() {
   const session = await auth();
 
   if (!session?.user?.email) {

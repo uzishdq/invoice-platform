@@ -8,6 +8,7 @@ export const ROUTES = {
     DASHBOARD: "/dashboard",
     ONBOARDING: "/dashboard/onboarding",
     INVOICES: "/dashboard/invoices",
+    CREATE_INVOICES: "/dashboard/invoices/create-invoice",
   },
 };
 

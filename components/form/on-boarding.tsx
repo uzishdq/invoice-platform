@@ -25,6 +25,8 @@ import { Button } from "../ui/button";
 import { onboardSchema } from "@/lib/validations/user.validation";
 import { onboardUser } from "@/lib/server/action/user.action";
 import { Loader2 } from "lucide-react";
+import { redirect } from "next/navigation";
+import { ROUTES } from "@/lib/constant";
 
 export default function OnBoarding() {
   const form = useForm<z.infer<typeof onboardSchema>>({
@@ -41,6 +43,10 @@ export default function OnBoarding() {
       if (data.ok) {
         toast.success(data.message);
         form.reset();
+
+        setTimeout(() => {
+          redirect(ROUTES.AUTH.DASHBOARD);
+        }, 500);
       } else {
         toast.error(data.message);
       }
