@@ -36,32 +36,42 @@ import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Textarea } from "../ui/textarea";
+import { createInvoice } from "@/lib/server/action/invoice.action";
+import { toast } from "sonner";
 
 export default function InvoiceForm() {
-  const form = useForm<z.infer<typeof invoiceSchema>>({
+  const form = useForm({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
-      invoiceNo: "5",
-      currency: "USD",
-      yourName: "",
-      yourEmail: "",
-      yourAddress: "",
+      name: "",
+      total: 0,
+      status: "PENDING",
+      date: undefined,
+      dueDate: 0,
+      fromName: "",
+      fromEmail: "",
+      fromAddress: "",
       clientName: "",
       clientEmail: "",
       clientAddress: "",
-      date: undefined,
-      dueDate: "",
-      itemName: "",
-      quantity: 0,
-      rate: 0,
+      currency: "USD",
+      invoiceNo: 5,
+      invoiceItemQTY: 0,
+      invoiceItemRate: 0,
+      invoiceDescription: "",
+      note: "",
     },
     mode: "onChange",
   });
 
   async function onSubmit(values: z.infer<typeof invoiceSchema>) {
-    const amount = values.quantity * values.rate;
-    const total = amount; // Simple calculation, can be expanded
-    console.log({ ...values, amount, total });
+    await createInvoice(values).then((data) => {
+      if (data.ok) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    });
   }
 
   return (
@@ -71,7 +81,7 @@ export default function InvoiceForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -80,7 +90,14 @@ export default function InvoiceForm() {
                   <FormItem>
                     <FormLabel>Invoice No.</FormLabel>
                     <FormControl>
-                      <Input placeholder="#" {...field} />
+                      <Input
+                        type="number"
+                        placeholder="#"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -97,7 +114,7 @@ export default function InvoiceForm() {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="United States Dollar - USD" />
                         </SelectTrigger>
                       </FormControl>
@@ -105,7 +122,6 @@ export default function InvoiceForm() {
                         <SelectItem value="USD">
                           United States Dollar - USD
                         </SelectItem>
-                        {/* Add more currencies as needed */}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -113,15 +129,29 @@ export default function InvoiceForm() {
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Invoice Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Invoice Name" type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="yourName"
+                name="fromName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>From</FormLabel>
+                    <FormLabel>From Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your Name" {...field} />
+                      <Input placeholder="Your Name" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -132,9 +162,9 @@ export default function InvoiceForm() {
                 name="clientName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>To</FormLabel>
+                    <FormLabel>Client Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Client Name" {...field} />
+                      <Input placeholder="Client Name" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,12 +174,12 @@ export default function InvoiceForm() {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="yourEmail"
+                name="fromEmail"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Your Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your Email" {...field} />
+                      <Input placeholder="Your Email" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,7 +192,11 @@ export default function InvoiceForm() {
                   <FormItem>
                     <FormLabel>Client Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Client Email" {...field} />
+                      <Input
+                        placeholder="Client Email"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -172,12 +206,16 @@ export default function InvoiceForm() {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="yourAddress"
+                name="fromAddress"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Your Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your Address" {...field} />
+                      <Input
+                        placeholder="Your Address"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -190,7 +228,11 @@ export default function InvoiceForm() {
                   <FormItem>
                     <FormLabel>Client Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="Client Address" {...field} />
+                      <Input
+                        placeholder="Client Address"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -203,7 +245,7 @@ export default function InvoiceForm() {
                 name="date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Date of birth</FormLabel>
+                    <FormLabel>Date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -244,12 +286,15 @@ export default function InvoiceForm() {
                 name="dueDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Invoice Due</FormLabel>
+                    <FormLabel>Due Date</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
-                        placeholder="Select due date"
+                        type="number"
+                        placeholder="Due Date"
                         {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -260,12 +305,16 @@ export default function InvoiceForm() {
             <div className="grid grid-cols-4 gap-4">
               <FormField
                 control={form.control}
-                name="itemName"
+                name="invoiceDescription"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input placeholder="Item name & description" {...field} />
+                      <Input
+                        placeholder="Item name & description"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -273,7 +322,7 @@ export default function InvoiceForm() {
               />
               <FormField
                 control={form.control}
-                name="quantity"
+                name="invoiceItemQTY"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Quantity</FormLabel>
@@ -293,7 +342,7 @@ export default function InvoiceForm() {
               />
               <FormField
                 control={form.control}
-                name="rate"
+                name="invoiceItemRate"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Rate</FormLabel>
@@ -316,7 +365,10 @@ export default function InvoiceForm() {
                 <FormControl>
                   <Input
                     readOnly
-                    value={form.watch("quantity") * form.watch("rate") || 0}
+                    value={
+                      form.watch("invoiceItemQTY") *
+                        form.watch("invoiceItemRate") || 0
+                    }
                   />
                 </FormControl>
               </FormItem>
@@ -324,13 +376,19 @@ export default function InvoiceForm() {
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span>
-                ${form.watch("quantity") * form.watch("rate") || 0}.00
+                $
+                {form.watch("invoiceItemQTY") * form.watch("invoiceItemRate") ||
+                  0}
+                .00
               </span>
             </div>
             <div className="flex justify-between">
               <span>Total (USD)</span>
               <span>
-                ${form.watch("quantity") * form.watch("rate") || 0}.00
+                $
+                {form.watch("invoiceItemQTY") * form.watch("invoiceItemRate") ||
+                  0}
+                .00
               </span>
             </div>
             <FormField
@@ -346,7 +404,31 @@ export default function InvoiceForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="PENDING">Pending</SelectItem>
+                      <SelectItem value="PAID">Paid</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button className="w-full" type="submit">
               Submit
             </Button>
           </form>

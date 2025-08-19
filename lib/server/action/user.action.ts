@@ -14,7 +14,7 @@ export async function onboardUser(values: z.infer<typeof onboardSchema>) {
     if (!session?.user || !session.user.email) {
       return {
         ok: false,
-        message: "You must be logged in to complete the onboarding.",
+        message: "You must be logged in to complete.",
       };
     }
 

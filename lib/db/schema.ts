@@ -107,6 +107,7 @@ export const invoice = pgTable("invoice", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
+  total: integer("total").notNull(),
   status: invoiceStatusEnum("status").default("PENDING"),
   fromName: text("from_name").notNull(),
   fromEmail: text("from_email").notNull(),
