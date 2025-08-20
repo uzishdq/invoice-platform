@@ -1,0 +1,21 @@
+export type TInvoice = {
+  id: string;
+  userId: string;
+  name: string;
+  total: number;
+  status: "PENDING" | "PAID" | null;
+  fromName: string;
+  fromEmail: string;
+  fromAddress: string;
+  clientName: string;
+  clientEmail: string;
+  clientAddress: string;
+  currency: string;
+  invoiceNo: number;
+  invoiceItemQTY: number;
+  invoiceItemRate: number;
+  invoiceDescription: string | null;
+  note: string | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+};
