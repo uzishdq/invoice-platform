@@ -2,16 +2,15 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { invoice } from "@/lib/db/schema";
 import { invoiceSchema } from "@/lib/validations/invoice.validation";
-import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 export async function createInvoice(values: z.infer<typeof invoiceSchema>) {
   try {
     const session = await auth();
 
-    if (!session?.user || !session.user.email) {
+    if (!session?.user || !session.user.id) {
       return {
         ok: false,
         message: "You must be logged in to complete.",
@@ -27,25 +26,36 @@ export async function createInvoice(values: z.infer<typeof invoiceSchema>) {
       };
     }
 
-    const amount = values.invoiceItemQTY * values.invoiceItemRate;
-    const total = amount; // Simple calculation, can be expanded
-    console.log({ ...values, amount, total });
+    const total = values.invoiceItemQTY * values.invoiceItemRate;
 
-    // const result = await db
-    //   .update(users)
-    //   .set({
-    //     name: parsed.data.name,
-    //     address: parsed.data.address,
-    //   })
-    //   .where(eq(users.email, session.user.email))
-    //   .returning();
+    const result = await db
+      .insert(invoice)
+      .values({
+        userId: session.user.id,
+        fromName: parsed.data.fromName,
+        fromEmail: parsed.data.fromEmail,
+        fromAddress: parsed.data.fromAddress,
+        clientName: parsed.data.clientName,
+        clientEmail: parsed.data.clientEmail,
+        clientAddress: parsed.data.clientAddress,
+        invoiceNo: parsed.data.invoiceNo,
+        name: parsed.data.name,
+        currency: parsed.data.currency,
+        total: total,
+        invoiceDescription: parsed.data.invoiceDescription,
+        invoiceItemQTY: parsed.data.invoiceItemQTY,
+        invoiceItemRate: parsed.data.invoiceItemRate,
+        note: parsed.data.note,
+        status: parsed.data.status,
+      })
+      .returning();
 
-    // if (result.length === 0) {
-    //   return {
-    //     ok: false,
-    //     message: "User not found or update failed.",
-    //   };
-    // }
+    if (result.length === 0) {
+      return {
+        ok: false,
+        message: "Create Invoice completed failed.",
+      };
+    }
 
     return {
       ok: true,

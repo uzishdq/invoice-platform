@@ -27,20 +27,11 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-export type Product = {
-  id: number;
-  header: string;
-  type: string;
-  status: string;
-  target: string;
-  limit: string;
-  reviewer: string;
-};
+import { TInvoice } from "@/lib/types/invoice.type";
 
 //
 // --- Cell dengan Drawer Viewer ---
-function TableCellViewer({ item }: { item: Product }) {
+function TableCellViewer({ item }: { item: TInvoice }) {
   const isMobile = useIsMobile();
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -49,12 +40,12 @@ function TableCellViewer({ item }: { item: Product }) {
           variant="link"
           className="text-foreground w-fit px-0 text-left"
         >
-          {item.header}
+          {item.name}
         </DrawerButton>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.name}</DrawerTitle>
           <DrawerDescription>Detail section</DrawerDescription>
         </DrawerHeader>
         <DrawerFooter>
@@ -70,51 +61,37 @@ function TableCellViewer({ item }: { item: Product }) {
 
 //
 // --- Columns ---
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<TInvoice>[] = [
   {
-    accessorKey: "header",
-    header: "Header",
+    accessorKey: "name",
+    header: "Invoice Name",
     cell: ({ row }) => <TableCellViewer item={row.original} />,
     enableHiding: false,
   },
   {
-    accessorKey: "type",
-    header: "Section Type",
+    accessorKey: "clientName",
+    header: "Client Name",
     cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.type}
-      </Badge>
+      <div className="capitalize">{row.original.clientName}</div>
     ),
+  },
+  {
+    accessorKey: "total",
+    header: "Total",
+    cell: ({ row }) => <div className="capitalize">{row.original.total}</div>,
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "Done" ? (
+        {row.original.status === "PAID" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
         ) : (
           <IconLoader />
         )}
         {row.original.status}
       </Badge>
-    ),
-  },
-  {
-    accessorKey: "target",
-    header: "Target",
-    cell: ({ row }) => <div className="capitalize">{row.original.target}</div>,
-  },
-  {
-    accessorKey: "limit",
-    header: "Limit",
-    cell: ({ row }) => <div className="capitalize">{row.original.limit}</div>,
-  },
-  {
-    accessorKey: "reviewer",
-    header: "Reviewer",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.original.reviewer}</div>
     ),
   },
   {
